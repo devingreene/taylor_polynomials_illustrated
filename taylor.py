@@ -3,14 +3,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy import pi,sin,cos,exp,log
 
-curve = deriv = deriv2 = deriv3 = order = figure_extent = \
-taylor_curve = xvalues = at_x = fig = ax = None
+fig = plt.figure()
 
 warnings = [
 	"Second degree Taylor polynomial\
-equivalent to function.  Using first degree Taylor polynomial.",
+ equivalent to function.  Using first degree Taylor polynomial.",
 	"Third degree Taylor polynomial\
-equivalent to function.  Using second degree Taylor polynomial."
+ equivalent to function.  Using second degree Taylor polynomial."
 ]
 
 
@@ -48,19 +47,14 @@ def selector(n):
 		deriv3= lambda x: -27*pi**2*(pi*x*cos(3*pi*x) + sin(3*pi*x))
 	
 
-def plotpicture(xmin,xmax,ymin=None,ymax=None):
+def plotpicture(xmin=1,xmax=3,ymin=None,ymax=None):
 	
-	global fig,ax,curve,xvalues,figure_extent
+	global ax,curve,xvalues,taylor_curve,order
 
-	# Clear what was before.  Make new figure if none
-	# exists.
-	if fig:
-		fig.clear()
-	else:
-		fig = plt.figure()
+	# Clear what was before.
+	fig.clear()
 
 	# Plotting parameters
-	
 	ax = plt.axes()
 	
 	xlength = xmax - xmin
@@ -82,7 +76,9 @@ def plotpicture(xmin,xmax,ymin=None,ymax=None):
 
 	plt.grid()
 
-	figure_extent = (xlength**2  + ylength**2)**0.5
+	# Setup artist for Taylor curve
+	taylor_curve = plt.plot([],[],'b-')
+	order=1
 
 	fig.show()
 
@@ -112,35 +108,30 @@ def update_degree(event):
 			order=2
 		else:
 			order=3
-		
 
 def update_taylor(event):
-	global fig,ax,deriv,deriv2,taylor_curve,at_x,xvalues,order
-	if taylor_curve and ax and taylor_curve in \
-	ax.get_children():
-		taylor_curve.remove()
+	global at_x,curve
+	if not ( taylor_curve and ax ) :
+		return
+
 	at_x = event.xdata
-	if order == 1:
-		try:
-			taylor_curve, = ax.plot(xvalues,curve(at_x) + \
-						(xvalues-at_x)*deriv(at_x),'r-')
-		except:
-			return
-	if order == 2:
-		try:	
-			taylor_curve, = ax.plot(xvalues, curve(at_x) + \
-						(xvalues-at_x)*deriv(at_x) + \
-						(xvalues-at_x)**2*deriv2(at_x)/2,'r-')
-		except:
-			return
-	if order == 3:
-		try:	
-			taylor_curve, = ax.plot(xvalues, curve(at_x) + \
-						(xvalues-at_x)*deriv(at_x) + \
-						(xvalues-at_x)**2*deriv2(at_x)/2+
-						(xvalues - at_x)**3/6*deriv3(at_x),'r-')
-		except:
-			return
 
-	fig.show()
+	try:
+		if order == 1:
+			taylor_curve[0].set_data(xvalues, \
+				curve(at_x) + (xvalues-at_x)*deriv(at_x) )
+		elif order == 2:
+			taylor_curve[0].set_data(xvalues, \
+				curve(at_x) + (xvalues-at_x)*deriv(at_x) + \
+							(xvalues-at_x)**2*deriv2(at_x)/2 )
+		elif order == 3:
+			taylor_curve[0].set_data(xvalues,\
+				curve(at_x) + \
+				(xvalues-at_x)*deriv(at_x) + \
+				(xvalues-at_x)**2*deriv2(at_x)/2+ \
+				(xvalues - at_x)**3/6*deriv3(at_x)  )
 
+		fig.show()
+
+	except:
+		return
