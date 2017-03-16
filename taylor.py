@@ -56,9 +56,7 @@ def plotpicture(xmin=1,xmax=3,ymin=None,ymax=None):
 
 	# Plotting parameters
 	ax = plt.axes()
-	
-	xlength = xmax - xmin
-	ax.set_xlim(xmin - 0.1*xlength, xmax + 0.1*xlength)
+	ax.set_xlim(xmin, xmax)
 	xvalues = np.linspace(xmin,xmax,251)
 	
 	if curve:
