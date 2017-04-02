@@ -65,10 +65,9 @@ def plotpicture(xmin=1,xmax=3,ymin=None,ymax=None):
 		print("Please use `selector' to choose a curve")
 		return
 	
-	if ymin and ymax:
-		ax.set_ylim(ymin,ymax)
-	
-	ymin,ymax = ax.get_ylim()
+	if not ymin and not ymax:
+		ymin,ymax = ax.get_ylim()
+
 	ylength = ymax - ymin
 	ax.set_ylim(ymin-0.1*ylength, ymax + 0.1*ylength)
 
